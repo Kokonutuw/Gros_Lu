@@ -1,4 +1,5 @@
 import "dotenv/config";
+import sonnex from 'talisman/phonetics/french/sonnex.js';
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
 
 
@@ -51,6 +52,7 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 // Detect "quoi / pourquoi / variants"
+const QUOI_PHONETIC = ["koi","kua", "kUa", "kva", "koa", "kuUa", "kuva", "kuua", "kUua", "kuoa", "kUva", "kUUa", "kUoa", "kUa", "kUaa", "keva"]
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
@@ -58,13 +60,16 @@ client.on("messageCreate", async (message) => {
   const msg = message.content.toLowerCase();
 
   const words = msg.match(/[a-zàâçéèêëîïôûùüÿñæœ]+/gi);
+  console.log(words)
   if (!words) return;
 
-  const lastWord = words[words.length - 1];
+  const lastWord = words[words.length - 1].replace(/(.)\1+/g, '$1').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  console.log("last word:",lastWord);
 
-  const isQuoiLike = /(qu?|k|c)((ou|w)a+|o(a+|i+))\W*$/.test(lastWord);
+  const lastWordPhonetic = sonnex(lastWord);
+  console.log("phonetic : ", lastWordPhonetic, "base comparison: ", QUOI_PHONETIC);
 
-  if (isQuoiLike) {
+  if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
     await message.reply("feur");
   }
 });
