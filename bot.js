@@ -68,6 +68,8 @@ const QUOI_PHONETIC = [
   "kUa",
   "kUaa",
   "keva",
+  "kwa",
+  "kvUa",
 ];
 
 client.on("messageCreate", async (message) => {
