@@ -23,13 +23,11 @@ client.once("clientReady", async () => {
   const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
   try {
-    console.log("Registering slash commands...");
-
     await rest.put(Routes.applicationCommands(process.env.APP_ID), {
       body: commands,
     });
 
-    console.log("Slash commands registered.");
+    console.log("Slash commands registered!");
   } catch (error) {
     console.error("Command registration error:", error);
   }
@@ -70,10 +68,27 @@ const QUOI_PHONETIC = [
   "keva",
   "kwa",
   "kvUa",
+  "kvoa",
+  "kvea",
+  "kea",
 ];
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
+
+  // React to thesillyfroggg's messages with 0.1% chance
+  if (message.author.id === "1072896926711816252") {
+    const randomValue = Math.floor(Math.random() * 1000);
+    console.log("Random value:", randomValue);
+    if (randomValue === 1) {
+      try {
+        await message.react("🤢");
+        await message.react("🌈");
+      } catch (err) {
+        console.error("Erreur réactions :", err);
+      }
+    }
+  }
 
   const match = message.content
     .toLowerCase()
@@ -85,11 +100,11 @@ client.on("messageCreate", async (message) => {
 
   const lastWord = match[1].replace(/(.)\1+/g, "$1");
 
-  console.log("last word:", lastWord);
+  //console.log("last word:", lastWord);
 
   const lastWordPhonetic = sonnex(lastWord);
 
-  console.log("phonetic:", lastWordPhonetic, "base comparison:", QUOI_PHONETIC);
+  //console.log("phonetic:", lastWordPhonetic);
 
   if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
     await message.reply("feur");
