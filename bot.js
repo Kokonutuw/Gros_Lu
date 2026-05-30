@@ -7,11 +7,13 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildScheduledEvents,
   ],
 });
 
 client.once("clientReady", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
+
 
   const commands = [
     {
@@ -108,6 +110,54 @@ client.on("messageCreate", async (message) => {
 
   if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
     await message.reply("feur");
+  }
+});
+
+
+client.on("guildScheduledEventCreate", async (event) => {
+  try {
+    // forum id
+    const forum = await client.channels.fetch("1274388316803829840");
+
+    // channel id
+    const announceChannel = await client.channels.fetch("1137681577422364713");
+
+    const location = event.entityMetadata?.location;
+
+    console.log("LOCATION =", location);
+
+    // choice tag ID
+    let tagId;
+
+    // Discord
+    if (event.entityType === 2) {
+      tagId = "1274391268511711322";
+    }
+    // IRL
+    else {
+      tagId = "1274391005503688808";
+    }
+
+    // creation of the post
+    const post = await forum.threads.create({
+      name: `${event.name}`,
+      message: {
+        content:
+          `**${event.name}**\n\n` +
+          `${event.description || "Aucune description"}\n\n` +
+          `${location || "Non défini"}`,
+      },
+      appliedTags: [tagId], // always 1 tag required
+    });
+
+    console.log("Post créé :", post.name);
+
+    // announcement in another channel
+    await announceChannel.send({
+      content: `**Nouvel événement disponible !**\n${post.url}`,
+    });
+  } catch (err) {
+    console.error(err);
   }
 });
 
