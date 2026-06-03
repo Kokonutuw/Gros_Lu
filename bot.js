@@ -1,6 +1,6 @@
 import "dotenv/config";
 import sonnex from "talisman/phonetics/french/sonnex.js";
-import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
+import { Client, GatewayIntentBits, REST, Routes, EmbedBuilder } from "discord.js";
 
 const client = new Client({
   intents: [
@@ -109,56 +109,85 @@ client.on("messageCreate", async (message) => {
   //console.log("phonetic:", lastWordPhonetic);
 
   if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
-    await message.reply("feur");
+    if (Math.random() < 0.1) {
+      await message.reply("feur");
+    }
   }
 });
 
 
 client.on("guildScheduledEventCreate", async (event) => {
   try {
-    // forum id
+    // Forum channel
     const forum = await client.channels.fetch("1274388316803829840");
 
-    // channel id
+    // Announcement channel
     const announceChannel = await client.channels.fetch("1137681577422364713");
 
     const location = event.entityMetadata?.location;
 
     console.log("LOCATION =", location);
 
-    // choice tag ID
+    // Tag selection
     let tagId;
 
-    // Discord
+    // Discord voice event
     if (event.entityType === 2) {
       tagId = "1274391268511711322";
     }
-    // IRL
+    // IRL / other event
     else {
       tagId = "1274391005503688808";
     }
 
-    // creation of the post
+    // Create forum post (simple message)
     const post = await forum.threads.create({
-      name: `${event.name}`,
+      name: event.name,
       message: {
-        content:
-          `**${event.name}**\n\n` +
-          `${event.description || "Aucune description"}\n\n` +
-          `${location || "Non défini"}`,
+        content: "Détails de l'événement ci-dessous",
       },
-      appliedTags: [tagId], // always 1 tag required
+      appliedTags: [tagId],
     });
 
     console.log("Post créé :", post.name);
 
-    // announcement in another channel
+    // Create embed
+    const embed = new EmbedBuilder()
+      .setTitle(event.name)
+      .setDescription(event.description || "Aucune description")
+      .addFields({
+        name: "Emplacement",
+        value: location || "Non défini",
+        inline: true,
+      })
+      .setColor(0x5865f2)
+      .setTimestamp();
+
+    // Add cover image if exists
+    const coverImage = event.coverImageURL({
+      size: 1024,
+      extension: "png",
+    });
+
+    if (coverImage) {
+      embed.setImage(coverImage);
+    }
+
+    // Send embed inside forum post
+    await post.send({
+      embeds: [embed],
+    });
+
+    // Send simple announcement
     await announceChannel.send({
-      content: `**Nouvel événement disponible !**\n${post.url}`,
+      content:
+        "Nouvel événement créé !\n\n" +
+        "Pour en discuter :\n" +
+        `${post.url}\n\n` +
+        `${event.url}`,
     });
   } catch (err) {
     console.error(err);
   }
 });
-
 client.login(process.env.DISCORD_TOKEN);
