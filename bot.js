@@ -80,7 +80,7 @@ client.on("messageCreate", async (message) => {
 
   // React to thesillyfroggg's messages with 0.1% chance
   if (message.author.id === "1072896926711816252") {
-    const randomValue = Math.floor(Math.random() * 1000);
+    const randomValue = Math.floor(Math.random() * 100);
     console.log("Random value:", randomValue);
     if (randomValue === 1) {
       try {
