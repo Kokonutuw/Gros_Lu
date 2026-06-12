@@ -28,13 +28,11 @@ client.once("clientReady", async () => {
     await rest.put(Routes.applicationCommands(process.env.APP_ID), {
       body: commands,
     });
-
-    console.log("Slash commands registered!");
   } catch (error) {
     console.error("Command registration error:", error);
   }
 });
-
+const eventMessages = new Map();
 // Slash commands handler
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -81,10 +79,9 @@ client.on("messageCreate", async (message) => {
   // React to thesillyfroggg's messages with 0.1% chance
   if (message.author.id === "1072896926711816252") {
     const randomValue = Math.floor(Math.random() * 100);
-    console.log("Random value:", randomValue);
     if (randomValue === 1) {
       try {
-        await message.react("🤢");
+        await message.react("<:yukipat:1514959149971275837>");
         await message.react("🌈");
       } catch (err) {
         console.error("Erreur réactions :", err);
@@ -126,7 +123,6 @@ client.on("guildScheduledEventCreate", async (event) => {
 
     const location = event.entityMetadata?.location;
 
-    console.log("LOCATION =", location);
 
     // Tag selection
     let tagId;
@@ -149,7 +145,6 @@ client.on("guildScheduledEventCreate", async (event) => {
       appliedTags: [tagId],
     });
 
-    console.log("Post créé :", post.name);
 
     // Create embed
     const embed = new EmbedBuilder()
@@ -162,6 +157,24 @@ client.on("guildScheduledEventCreate", async (event) => {
       })
       .setColor(0x5865f2)
       .setTimestamp();
+
+    // Add start date if exists
+    if (event.scheduledStartAt) {
+      embed.addFields({
+        name: "Début",
+        value: event.scheduledStartAt.toLocaleString("fr-FR"),
+        inline: true,
+      });
+    }
+
+    // Add end date if exists
+    if (event.scheduledEndAt) {
+      embed.addFields({
+        name: "Fin",
+        value: event.scheduledEndAt.toLocaleString("fr-FR"),
+        inline: true,
+      });
+    }
 
     // Add cover image if exists
     const coverImage = event.coverImageURL({
