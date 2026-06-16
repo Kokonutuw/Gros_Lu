@@ -107,7 +107,11 @@ client.on("messageCreate", async (message) => {
 
   if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
     if (Math.random() < 0.1) {
-      await message.reply("feur");
+      if (message.author.id === "262361761611644928") {
+        await message.reply("<:yukipat:1514959149971275837>");
+      } else {
+        await message.reply("feur");
+      }
     }
   }
 });
@@ -122,7 +126,6 @@ client.on("guildScheduledEventCreate", async (event) => {
     const announceChannel = await client.channels.fetch("1137681577422364713");
 
     const location = event.entityMetadata?.location;
-
 
     // Tag selection
     let tagId;
@@ -144,7 +147,6 @@ client.on("guildScheduledEventCreate", async (event) => {
       },
       appliedTags: [tagId],
     });
-
 
     // Create embed
     const embed = new EmbedBuilder()
