@@ -81,7 +81,6 @@ client.on("messageCreate", async (message) => {
     const randomValue = Math.floor(Math.random() * 100);
     if (randomValue === 1) {
       try {
-        await message.react("<:yukipat:1514959149971275837>");
         await message.react("🌈");
       } catch (err) {
         console.error("Erreur réactions :", err);
@@ -108,7 +107,7 @@ client.on("messageCreate", async (message) => {
   if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
     if (Math.random() < 0.1) {
       if (message.author.id === "262361761611644928") {
-        await message.reply("<:yukipat:1514959149971275837>");
+        await message.reply("C'est fine ^^");
       } else {
         await message.reply("feur");
       }
