@@ -75,17 +75,6 @@ const QUOI_PHONETIC = [
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
-
-  // React to thesillyfroggg's messages with 0.1% chance
-  if (message.author.id === "1072896926711816252") {
-    const randomValue = Math.floor(Math.random() * 100);
-    if (randomValue === 1) {
-      try {
-        await message.react("🌈");
-      } catch (err) {
-        console.error("Erreur réactions :", err);
-      }
-    }
   }
 
   const match = message.content
