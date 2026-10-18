@@ -40,11 +40,8 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "ping") {
     const start = Date.now();
 
-    await interaction.reply("Pong!");
-
     const ping = Date.now() - start;
-
-    await interaction.editReply(`Pong! ${ping}ms`);
+    await interaction.reply(`Pong! ${ping}ms`);
   }
 });
 
