@@ -75,7 +75,7 @@ const QUOI_PHONETIC = [
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
-  }
+  
 
   const match = message.content
     .toLowerCase()
