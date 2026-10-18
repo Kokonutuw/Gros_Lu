@@ -38,9 +38,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "ping") {
-    const start = Date.now();
-
-    const ping = Date.now() - start;
+    const ping = Date.now() - interaction.createdTimestamp;
     await interaction.reply(`Pong! ${ping}ms`);
   }
 });
