@@ -95,6 +95,8 @@ client.on("messageCreate", async (message) => {
       } else {
         await message.reply("feur");
       }
+    }else{
+      console.log("Quoi détécté mais pas feur");
     }
   }
 });
