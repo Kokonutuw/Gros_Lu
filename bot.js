@@ -89,7 +89,7 @@ client.on("messageCreate", async (message) => {
   //console.log("phonetic:", lastWordPhonetic);
 
   if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.3) {
       if (message.author.id === "262361761611644928") {
         await message.reply("C'est fine ^^");
       } else {
