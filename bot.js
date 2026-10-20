@@ -85,18 +85,20 @@ client.on("messageCreate", async (message) => {
   //console.log("last word:", lastWord);
 
   const lastWordPhonetic = sonnex(lastWord);
+  const index = QUOI_PHONETIC.indexOf(lastWordPhonetic);
 
   //console.log("phonetic:", lastWordPhonetic);
 
-  if (QUOI_PHONETIC.includes(lastWordPhonetic)) {
+  if (index !== -1) {
     if (Math.random() < 0.3) {
       if (message.author.id === "262361761611644928") {
         await message.reply("C'est fine ^^");
       } else {
         await message.reply("feur");
+	console.log("[QUOI] feur envoyé hehehehehe");
       }
     }else{
-      console.log("Quoi détécté mais pas feur");
+      console.log("[QUOI] '" + QUOI_PHONETIC[index] + "' détécté, mais pas feur");
     }
   }
 });
