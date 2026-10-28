@@ -15,9 +15,11 @@
   "author": "Kokau",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^11.10.0",
     "discord.js": "^14.26.4",
     "dotenv": "^16.0.3",
     "express": "^5.2.1",
+    "node-cron": "^4.2.1",
     "talisman": "^1.1.4"
   },
   "devDependencies": {

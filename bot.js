@@ -15,7 +15,7 @@ const client = new Client({
 });
 
 // --- AJOUT anniversaires : base SQLite + fonctions ---
-const BDAY_CHANNEL_ID = "1137681577422364713";
+const BDAY_CHANNEL_ID = "1113025136992456716";
 
 const db = new Database("./anniversaires.db");
 
@@ -49,6 +49,7 @@ function nowParis() {
 
 async function souhaiterAnniversaires() {
   const { jour, mois, annee } = nowParis();
+  console.log(`[ANNIV] Vérification ${jour}/${mois}/${annee}`);
 
   // derniere_annee évite les doublons (redémarrage, double exécution)
   const membres = db
@@ -65,7 +66,7 @@ async function souhaiterAnniversaires() {
     const channel = await client.channels.fetch(BDAY_CHANNEL_ID);
 
     for (const { user_id } of membres) {
-      await channel.send(`🎉 Joyeux anniversaire <@${user_id}> ! 🎂`);
+      await channel.send(`🎉 Joyeux anniversaire <@${user_id}> !`);
       db.prepare(
         "UPDATE anniversaires SET derniere_annee = ? WHERE user_id = ?"
       ).run(annee, user_id);
@@ -123,13 +124,13 @@ client.once("clientReady", async () => {
 
   // --- AJOUT anniversaires : tâche planifiée ---
   // Tous les jours à 9h00 (Paris)
-  cron.schedule("0 9 * * *", souhaiterAnniversaires, {
+  cron.schedule("22 9 * * *", souhaiterAnniversaires, {
     timezone: "Europe/Paris",
   });
 
   // Rattrapage si le bot était éteint à 9h (uniquement après 9h pour ne pas
   // souhaiter en pleine nuit lors d'un redémarrage)
-  if (nowParis().heure >= 9) {
+  if (nowParis().heure >= 10) {
     souhaiterAnniversaires();
   }
   // --- FIN AJOUT ---
@@ -141,7 +142,10 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.commandName === "ping") {
     const ping = Date.now() - interaction.createdTimestamp;
-    await interaction.reply(`Pong! ${ping}ms`);
+    await interaction.reply({
+    	content: `Pong! ${ping}ms`,
+    	flags: MessageFlags.Ephemeral,
+  	});
   }
 
   // --- AJOUT anniversaires : handler de la commande ---
@@ -173,7 +177,7 @@ client.on("interactionCreate", async (interaction) => {
     ).run(interaction.user.id, jour, mois);
 
     await interaction.reply({
-      content: `Anniversaire enregistré : ${jour}/${mois} 🎂`,
+      content: `Anniversaire enregistré : ${jour}/${mois}`,
       flags: MessageFlags.Ephemeral,
     });
   }
