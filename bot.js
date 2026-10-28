@@ -1,6 +1,5 @@
 import "dotenv/config";
 import sonnex from "talisman/phonetics/french/sonnex.js";
-import { Client, GatewayIntentBits, REST, Routes, EmbedBuilder } from "discord.js";
 // --- AJOUT anniversaires : imports ---
 import { MessageFlags } from "discord.js";
 import cron from "node-cron";
