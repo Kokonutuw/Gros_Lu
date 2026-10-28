@@ -250,72 +250,19 @@ client.on("guildScheduledEventCreate", async (event) => {
     // Announcement channel
     const announceChannel = await client.channels.fetch("1137681577422364713");
 
-    const location = event.entityMetadata?.location;
-
     // Tag selection
-    let tagId;
+    const tagId =
+      event.entityType === 2
+        ? "1274391268511711322" // Discord voice event
+        : "1274391005503688808"; // IRL / other event
 
-    // Discord voice event
-    if (event.entityType === 2) {
-      tagId = "1274391268511711322";
-    }
-    // IRL / other event
-    else {
-      tagId = "1274391005503688808";
-    }
-
-    // Create forum post (simple message)
+    // Create forum post avec directement le lien de l'event
     const post = await forum.threads.create({
       name: event.name,
       message: {
-        content: "Détails de l'événement ci-dessous",
+        content: event.url,
       },
       appliedTags: [tagId],
-    });
-
-    // Create embed
-    const embed = new EmbedBuilder()
-      .setTitle(event.name)
-      .setDescription(event.description || "Aucune description")
-      .addFields({
-        name: "Emplacement",
-        value: location || "Non défini",
-        inline: true,
-      })
-      .setColor(0x5865f2)
-      .setTimestamp();
-
-    // Add start date if exists
-    if (event.scheduledStartAt) {
-      embed.addFields({
-        name: "Début",
-        value: event.scheduledStartAt.toLocaleString("fr-FR"),
-        inline: true,
-      });
-    }
-
-    // Add end date if exists
-    if (event.scheduledEndAt) {
-      embed.addFields({
-        name: "Fin",
-        value: event.scheduledEndAt.toLocaleString("fr-FR"),
-        inline: true,
-      });
-    }
-
-    // Add cover image if exists
-    const coverImage = event.coverImageURL({
-      size: 1024,
-      extension: "png",
-    });
-
-    if (coverImage) {
-      embed.setImage(coverImage);
-    }
-
-    // Send embed inside forum post
-    await post.send({
-      embeds: [embed],
     });
 
     // Send simple announcement
